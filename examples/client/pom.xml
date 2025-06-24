@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>io.a2a.sdk</groupId>
-        <artifactId>a2a-java-sdk-parent</artifactId>
+        <artifactId>a2a-java-sdk-examples-parent</artifactId>
         <version>0.2.4-SNAPSHOT</version>
     </parent>
 
@@ -16,6 +16,11 @@
     <description>Examples for the Java SDK for the Agent2Agent Protocol (A2A)</description>
 
     <dependencies>
+        <dependency>
+            <groupId>io.a2a.sdk</groupId>
+            <artifactId>a2a-java-sdk-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>io.a2a.sdk</groupId>
             <artifactId>a2a-java-sdk-core</artifactId>
