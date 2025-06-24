@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.a2a.http.JdkA2AHttpClient;
 import io.a2a.spec.A2AServerException;
 import io.a2a.spec.AgentCard;
 import io.a2a.spec.AgentSkill;
@@ -450,8 +451,9 @@ public class A2AClientTest {
                                 .withBody(AUTHENTICATION_EXTENDED_AGENT_CARD)
                 );
 
-        A2AClient client = new A2AClient("http://localhost:4001");
-        AgentCard agentCard = client.getAgentCard("/agent/authenticatedExtendedCard", null);
+        A2ACardResolver cardResolver = new A2ACardResolver(new JdkA2AHttpClient(), "http://localhost:4001", "/agent/authenticatedExtendedCard");
+        A2AClient client = new A2AClient(cardResolver.getAgentCard());
+        AgentCard agentCard = client.getAgentCard();
         assertEquals("GeoSpatial Route Planner Agent Extended", agentCard.name());
         assertEquals("Extended description", agentCard.description());
         assertEquals("https://georoute-agent.example.com/a2a/v1", agentCard.url());
