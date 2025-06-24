@@ -116,23 +116,8 @@ public class A2AClient {
      */
     public AgentCard getAgentCard() throws A2AClientError, A2AClientJSONError {
         if (this.agentCard == null) {
-            this.agentCard = A2A.getAgentCard(this.httpClient, this.agentUrl);
-        }
-        return this.agentCard;
-    }
-
-    /**
-     * Get the agent card for the A2A server this client will be communicating with.
-     *
-     * @param relativeCardPath the path to the agent card endpoint relative to the base URL of the A2A server
-     * @param authHeaders the HTTP authentication headers to use
-     * @return the agent card for the A2A server
-     * @throws A2AClientError If an HTTP error occurs fetching the card
-     * @throws A2AClientJSONError f the response body cannot be decoded as JSON or validated against the AgentCard schema
-     */
-    public AgentCard getAgentCard(String relativeCardPath, Map<String, String> authHeaders) throws A2AClientError, A2AClientJSONError {
-        if (this.agentCard == null) {
-            this.agentCard = A2A.getAgentCard(this.httpClient, this.agentUrl, relativeCardPath, authHeaders);
+            A2ACardResolver resolver = new A2ACardResolver(this.httpClient, this.agentUrl);
+            this.agentCard = resolver.getAgentCard();
         }
         return this.agentCard;
     }

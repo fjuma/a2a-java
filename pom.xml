@@ -172,6 +172,7 @@
     </build>
 
     <modules>
+        <module>client</module>
         <module>core</module>
         <module>sdk-jakarta</module>
         <module>sdk-quarkus</module>

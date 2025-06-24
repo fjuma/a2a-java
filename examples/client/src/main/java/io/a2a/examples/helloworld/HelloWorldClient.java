@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.a2a.client.A2ACardResolver;
 import io.a2a.client.A2AClient;
+import io.a2a.http.JdkA2AHttpClient;
 import io.a2a.spec.A2A;
 import io.a2a.spec.AgentCard;
 import io.a2a.spec.Message;
@@ -24,7 +26,8 @@ public class HelloWorldClient {
     public static void main(String[] args) {
         try {
             AgentCard finalAgentCard = null;
-            AgentCard publicAgentCard = A2A.getAgentCard("http://localhost:9999");
+            A2ACardResolver cardResolver = new A2ACardResolver(new JdkA2AHttpClient(), SERVER_URL);
+            AgentCard publicAgentCard = cardResolver.getAgentCard();
             System.out.println("Successfully fetched public agent card:");
             System.out.println(OBJECT_MAPPER.writeValueAsString(publicAgentCard));
             System.out.println("Using public agent card for client initialization (default).");
@@ -34,7 +37,8 @@ public class HelloWorldClient {
                 System.out.println("Public card supports authenticated extended card. Attempting to fetch from: " + SERVER_URL + "/agent/authenticatedExtendedCard");
                 Map<String, String> authHeaders = new HashMap<>();
                 authHeaders.put("Authorization", "Bearer dummy-token-for-extended-card");
-                AgentCard extendedAgentCard = A2A.getAgentCard(SERVER_URL, "/agent/authenticatedExtendedCard", authHeaders);
+                cardResolver = new A2ACardResolver(new JdkA2AHttpClient(), SERVER_URL, "/agent/authenticatedExtendedCard", authHeaders);
+                AgentCard extendedAgentCard = cardResolver.getAgentCard();
                 System.out.println("Successfully fetched authenticated extended agent card:");
                 System.out.println(OBJECT_MAPPER.writeValueAsString(extendedAgentCard));
                 System.out.println("Using AUTHENTICATED EXTENDED agent card for client initialization.");
