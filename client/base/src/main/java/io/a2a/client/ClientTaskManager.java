@@ -70,15 +70,28 @@ public class ClientTaskManager {
             if (task.getHistory() == null) {
                 taskBuilder.history(taskStatusUpdateEvent.getStatus().message());
             } else {
+<<<<<<< HEAD:client/base/src/main/java/io/a2a/client/ClientTaskManager.java
                 List<Message> history = new ArrayList<>(task.getHistory());
+=======
+                List<Message> history = task.getHistory();
+>>>>>>> 5955029 (feat: Update the ClientTransport interface, introducing ClientCallContext, ClientConfig, and ClientCallInterceptor similar to the Python SDK. Introduce a ClientTransportProvider and update the JSONRPC and gRPC transport implementations. Introduce a new Client and ClientFactory implementations.):client/src/main/java/io/a2a/client/ClientTaskManager.java
                 history.add(taskStatusUpdateEvent.getStatus().message());
                 taskBuilder.history(history);
             }
         }
         if (taskStatusUpdateEvent.getMetadata() != null) {
+<<<<<<< HEAD:client/base/src/main/java/io/a2a/client/ClientTaskManager.java
             Map<String, Object> newMetadata = task.getMetadata() != null ? new HashMap<>(task.getMetadata()) : new HashMap<>();
             newMetadata.putAll(taskStatusUpdateEvent.getMetadata());
             taskBuilder.metadata(newMetadata);
+=======
+            Map<String, Object> metadata = taskStatusUpdateEvent.getMetadata();
+            if (metadata == null) {
+                metadata = new HashMap<>();
+            }
+            metadata.putAll(taskStatusUpdateEvent.getMetadata());
+            taskBuilder.metadata(metadata);
+>>>>>>> 5955029 (feat: Update the ClientTransport interface, introducing ClientCallContext, ClientConfig, and ClientCallInterceptor similar to the Python SDK. Introduce a ClientTransportProvider and update the JSONRPC and gRPC transport implementations. Introduce a new Client and ClientFactory implementations.):client/src/main/java/io/a2a/client/ClientTaskManager.java
         }
         taskBuilder.status(taskStatusUpdateEvent.getStatus());
         currentTask = taskBuilder.build();

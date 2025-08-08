@@ -45,7 +45,11 @@ public abstract class AbstractClient {
      * Send a message to the remote agent. This method will automatically use
      * the streaming or non-streaming approach as determined by the server's
      * agent card and the client configuration. The configured client consumers
+<<<<<<< HEAD:client/base/src/main/java/io/a2a/client/AbstractClient.java
      * will be used to handle messages, tasks, and update events received
+=======
+     * and will be used to handle messages, tasks, and update events received
+>>>>>>> 5955029 (feat: Update the ClientTransport interface, introducing ClientCallContext, ClientConfig, and ClientCallInterceptor similar to the Python SDK. Introduce a ClientTransportProvider and update the JSONRPC and gRPC transport implementations. Introduce a new Client and ClientFactory implementations.):client/src/main/java/io/a2a/client/AbstractClient.java
      * from the remote agent. The configured streaming error handler will be used
      * if an error occurs during streaming. The configured client push notification
      * configuration will get used for streaming.
@@ -75,6 +79,7 @@ public abstract class AbstractClient {
     /**
      * Send a message to the remote agent. This method will automatically use
      * the streaming or non-streaming approach as determined by the server's
+<<<<<<< HEAD:client/base/src/main/java/io/a2a/client/AbstractClient.java
      * agent card and the client configuration. The specified client consumers
      * will be used to handle messages, tasks, and update events received
      * from the remote agent. The specified streaming error handler will be used
@@ -115,6 +120,8 @@ public abstract class AbstractClient {
     /**
      * Send a message to the remote agent. This method will automatically use
      * the streaming or non-streaming approach as determined by the server's
+=======
+>>>>>>> 5955029 (feat: Update the ClientTransport interface, introducing ClientCallContext, ClientConfig, and ClientCallInterceptor similar to the Python SDK. Introduce a ClientTransportProvider and update the JSONRPC and gRPC transport implementations. Introduce a new Client and ClientFactory implementations.):client/src/main/java/io/a2a/client/AbstractClient.java
      * agent card and the client configuration. The configured client consumers
      * will be used to handle messages, tasks, and update events received from
      * the remote agent. The configured streaming error handler will be used
@@ -288,9 +295,12 @@ public abstract class AbstractClient {
     /**
      * Resubscribe to a task's event stream.
      * This is only available if both the client and server support streaming.
+<<<<<<< HEAD:client/base/src/main/java/io/a2a/client/AbstractClient.java
      * The configured client consumers will be used to handle messages, tasks,
      * and update events received from the remote agent. The configured streaming
      * error handler will be used if an error occurs during streaming.
+=======
+>>>>>>> 5955029 (feat: Update the ClientTransport interface, introducing ClientCallContext, ClientConfig, and ClientCallInterceptor similar to the Python SDK. Introduce a ClientTransportProvider and update the JSONRPC and gRPC transport implementations. Introduce a new Client and ClientFactory implementations.):client/src/main/java/io/a2a/client/AbstractClient.java
      *
      * @param request the parameters specifying which task's notification configs to delete
      * @throws A2AClientException if resubscribing fails for any reason
@@ -313,6 +323,7 @@ public abstract class AbstractClient {
     public abstract void resubscribe(TaskIdParams request, ClientCallContext context) throws A2AClientException;
 
     /**
+<<<<<<< HEAD:client/base/src/main/java/io/a2a/client/AbstractClient.java
      * Resubscribe to a task's event stream.
      * This is only available if both the client and server support streaming.
      * The specified client consumers will be used to handle messages, tasks, and
@@ -356,6 +367,8 @@ public abstract class AbstractClient {
     }
 
     /**
+=======
+>>>>>>> 5955029 (feat: Update the ClientTransport interface, introducing ClientCallContext, ClientConfig, and ClientCallInterceptor similar to the Python SDK. Introduce a ClientTransportProvider and update the JSONRPC and gRPC transport implementations. Introduce a new Client and ClientFactory implementations.):client/src/main/java/io/a2a/client/AbstractClient.java
      * Retrieve the AgentCard.
      *
      * @param context optional client call context for the request (may be {@code null})
@@ -372,7 +385,11 @@ public abstract class AbstractClient {
     /**
      * Process the event using all configured consumers.
      */
+<<<<<<< HEAD:client/base/src/main/java/io/a2a/client/AbstractClient.java
     void consume(ClientEvent clientEventOrMessage, AgentCard agentCard) {
+=======
+    public void consume(ClientEvent clientEventOrMessage, AgentCard agentCard) {
+>>>>>>> 5955029 (feat: Update the ClientTransport interface, introducing ClientCallContext, ClientConfig, and ClientCallInterceptor similar to the Python SDK. Introduce a ClientTransportProvider and update the JSONRPC and gRPC transport implementations. Introduce a new Client and ClientFactory implementations.):client/src/main/java/io/a2a/client/AbstractClient.java
         for (BiConsumer<ClientEvent, AgentCard> consumer : consumers) {
             consumer.accept(clientEventOrMessage, agentCard);
         }

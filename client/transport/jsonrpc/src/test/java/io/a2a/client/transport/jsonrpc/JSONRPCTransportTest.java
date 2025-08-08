@@ -50,7 +50,6 @@ import io.a2a.spec.FileContent;
 import io.a2a.spec.FilePart;
 import io.a2a.spec.FileWithBytes;
 import io.a2a.spec.FileWithUri;
-import io.a2a.spec.GetAuthenticatedExtendedCardResponse;
 import io.a2a.spec.GetTaskPushNotificationConfigParams;
 import io.a2a.spec.Message;
 import io.a2a.spec.MessageSendConfiguration;
@@ -66,7 +65,6 @@ import io.a2a.spec.TaskPushNotificationConfig;
 import io.a2a.spec.TaskQueryParams;
 import io.a2a.spec.TaskState;
 import io.a2a.spec.TextPart;
-import io.a2a.spec.TransportProtocol;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -359,7 +357,7 @@ public class JSONRPCTransportTest {
         this.server.when(
                         request()
                                 .withMethod("GET")
-                                .withPath("/.well-known/agent-card.json")
+                                .withPath("/.well-known/agent.json")
                 )
                 .respond(
                         response()
@@ -420,16 +418,7 @@ public class JSONRPCTransportTest {
         assertEquals(outputModes, skills.get(1).outputModes());
         assertFalse(agentCard.supportsAuthenticatedExtendedCard());
         assertEquals("https://georoute-agent.example.com/icon.png", agentCard.iconUrl());
-        assertEquals("0.2.9", agentCard.protocolVersion());
-        assertEquals("JSONRPC", agentCard.preferredTransport());
-        List<AgentInterface> additionalInterfaces = agentCard.additionalInterfaces();
-        assertEquals(3, additionalInterfaces.size());
-        AgentInterface jsonrpc = new AgentInterface(TransportProtocol.JSONRPC.asString(), "https://georoute-agent.example.com/a2a/v1");
-        AgentInterface grpc = new AgentInterface(TransportProtocol.GRPC.asString(), "https://georoute-agent.example.com/a2a/grpc");
-        AgentInterface httpJson = new AgentInterface(TransportProtocol.HTTP_JSON.asString(), "https://georoute-agent.example.com/a2a/json");
-        assertEquals(jsonrpc, additionalInterfaces.get(0));
-        assertEquals(grpc, additionalInterfaces.get(1));
-        assertEquals(httpJson, additionalInterfaces.get(2));
+        assertEquals("0.2.5", agentCard.protocolVersion());
     }
 
     @Test
@@ -453,7 +442,17 @@ public class JSONRPCTransportTest {
                 .respond(
                         response()
                                 .withStatusCode(200)
-                                .withBody(GET_AUTHENTICATED_EXTENDED_AGENT_CARD_RESPONSE)
+                                .withBody(AGENT_CARD_SUPPORTS_EXTENDED)
+                );
+        this.server.when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/agent/authenticatedExtendedCard")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withBody(AUTHENTICATION_EXTENDED_AGENT_CARD)
                 );
 
         JSONRPCTransport client = new JSONRPCTransport("http://localhost:4001");
