@@ -5,8 +5,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import io.a2a.client.config.ClientCallContext;
-import io.a2a.client.config.ClientConfig;
+import io.a2a.client.transport.spi.interceptors.ClientCallContext;
 import io.a2a.client.transport.spi.ClientTransport;
 import io.a2a.spec.A2AClientError;
 import io.a2a.spec.A2AClientException;
@@ -28,24 +27,30 @@ import io.a2a.spec.TaskPushNotificationConfig;
 import io.a2a.spec.TaskQueryParams;
 import io.a2a.spec.TaskStatusUpdateEvent;
 
+import static io.a2a.util.Assert.checkNotNullParam;
+
 public class Client extends AbstractClient {
 
     private final ClientConfig clientConfig;
     private final ClientTransport clientTransport;
     private AgentCard agentCard;
 
-    public Client(AgentCard agentCard, ClientConfig clientConfig, ClientTransport clientTransport,
+    Client(AgentCard agentCard, ClientConfig clientConfig, ClientTransport clientTransport,
                   List<BiConsumer<ClientEvent, AgentCard>> consumers, Consumer<Throwable> streamingErrorHandler) {
         super(consumers, streamingErrorHandler);
+        checkNotNullParam("agentCard", agentCard);
+
         this.agentCard = agentCard;
         this.clientConfig = clientConfig;
         this.clientTransport = clientTransport;
     }
 
+    public static ClientBuilder from(AgentCard agentCard) {
+        return new ClientBuilder(agentCard);
+    }
 
     @Override
     public void sendMessage(Message request, ClientCallContext context) throws A2AClientException {
-<<<<<<< HEAD:client/base/src/main/java/io/a2a/client/Client.java
         MessageSendParams messageSendParams = getMessageSendParams(request, clientConfig);
         sendMessage(messageSendParams, null, null, context);
     }
@@ -55,22 +60,6 @@ public class Client extends AbstractClient {
                             Consumer<Throwable> streamingErrorHandler, ClientCallContext context) throws A2AClientException {
         MessageSendParams messageSendParams = getMessageSendParams(request, clientConfig);
         sendMessage(messageSendParams, consumers, streamingErrorHandler, context);
-=======
-        MessageSendConfiguration messageSendConfiguration = new MessageSendConfiguration.Builder()
-                .acceptedOutputModes(clientConfig.getAcceptedOutputModes())
-                .blocking(clientConfig.isPolling())
-                .historyLength(clientConfig.getHistoryLength())
-                .pushNotification(clientConfig.getPushNotificationConfig())
-                .build();
-
-        MessageSendParams messageSendParams = new MessageSendParams.Builder()
-                .message(request)
-                .configuration(messageSendConfiguration)
-                .metadata(clientConfig.getMetadata())
-                .build();
-
-        sendMessage(messageSendParams, context);
->>>>>>> 5955029 (feat: Update the ClientTransport interface, introducing ClientCallContext, ClientConfig, and ClientCallInterceptor similar to the Python SDK. Introduce a ClientTransportProvider and update the JSONRPC and gRPC transport implementations. Introduce a new Client and ClientFactory implementations.):client/src/main/java/io/a2a/client/Client.java
     }
 
     @Override
@@ -89,11 +78,7 @@ public class Client extends AbstractClient {
                 .metadata(metatadata)
                 .build();
 
-<<<<<<< HEAD:client/base/src/main/java/io/a2a/client/Client.java
         sendMessage(messageSendParams, null, null, context);
-=======
-        sendMessage(messageSendParams, context);
->>>>>>> 5955029 (feat: Update the ClientTransport interface, introducing ClientCallContext, ClientConfig, and ClientCallInterceptor similar to the Python SDK. Introduce a ClientTransportProvider and update the JSONRPC and gRPC transport implementations. Introduce a new Client and ClientFactory implementations.):client/src/main/java/io/a2a/client/Client.java
     }
 
     @Override
@@ -132,29 +117,13 @@ public class Client extends AbstractClient {
 
     @Override
     public void resubscribe(TaskIdParams request, ClientCallContext context) throws A2AClientException {
-<<<<<<< HEAD:client/base/src/main/java/io/a2a/client/Client.java
-       resubscribeToTask(request, null, null, context);
+        resubscribeToTask(request, null, null, context);
     }
 
     @Override
     public void resubscribe(TaskIdParams request, List<BiConsumer<ClientEvent, AgentCard>> consumers,
                             Consumer<Throwable> streamingErrorHandler, ClientCallContext context) throws A2AClientException {
         resubscribeToTask(request, consumers, streamingErrorHandler, context);
-=======
-        if (! clientConfig.isStreaming() || ! agentCard.capabilities().streaming()) {
-            throw new A2AClientException("Client and/or server does not support resubscription");
-        }
-        ClientTaskManager tracker = new ClientTaskManager();
-        Consumer<StreamingEventKind> eventHandler = event -> {
-            try {
-                ClientEvent clientEvent = getClientEvent(event, tracker);
-                consume(clientEvent, agentCard);
-            } catch (A2AClientError e) {
-                getStreamingErrorHandler().accept(e);
-            }
-        };
-        clientTransport.resubscribe(request, eventHandler, getStreamingErrorHandler(), context);
->>>>>>> 5955029 (feat: Update the ClientTransport interface, introducing ClientCallContext, ClientConfig, and ClientCallInterceptor similar to the Python SDK. Introduce a ClientTransportProvider and update the JSONRPC and gRPC transport implementations. Introduce a new Client and ClientFactory implementations.):client/src/main/java/io/a2a/client/Client.java
     }
 
     @Override
@@ -185,12 +154,8 @@ public class Client extends AbstractClient {
         }
     }
 
-<<<<<<< HEAD:client/base/src/main/java/io/a2a/client/Client.java
     private void sendMessage(MessageSendParams messageSendParams, List<BiConsumer<ClientEvent, AgentCard>> consumers,
                              Consumer<Throwable> errorHandler, ClientCallContext context) throws A2AClientException {
-=======
-    private void sendMessage(MessageSendParams messageSendParams, ClientCallContext context) throws A2AClientException {
->>>>>>> 5955029 (feat: Update the ClientTransport interface, introducing ClientCallContext, ClientConfig, and ClientCallInterceptor similar to the Python SDK. Introduce a ClientTransportProvider and update the JSONRPC and gRPC transport implementations. Introduce a new Client and ClientFactory implementations.):client/src/main/java/io/a2a/client/Client.java
         if (! clientConfig.isStreaming() || ! agentCard.capabilities().streaming()) {
             EventKind eventKind = clientTransport.sendMessage(messageSendParams, context);
             ClientEvent clientEvent;
@@ -200,7 +165,6 @@ public class Client extends AbstractClient {
                 // must be a message
                 clientEvent = new MessageEvent((Message) eventKind);
             }
-<<<<<<< HEAD:client/base/src/main/java/io/a2a/client/Client.java
             consume(clientEvent, agentCard, consumers);
         } else {
             ClientTaskManager tracker = new ClientTaskManager();
@@ -273,20 +237,4 @@ public class Client extends AbstractClient {
                 .metadata(clientConfig.getMetadata())
                 .build();
     }
-=======
-            consume(clientEvent, agentCard);
-        } else {
-            ClientTaskManager tracker = new ClientTaskManager();
-            Consumer<StreamingEventKind> eventHandler = event -> {
-                try {
-                    ClientEvent clientEvent = getClientEvent(event, tracker);
-                    consume(clientEvent, agentCard);
-                } catch (A2AClientError e) {
-                    getStreamingErrorHandler().accept(e);
-                }
-            };
-            clientTransport.sendMessageStreaming(messageSendParams, eventHandler, getStreamingErrorHandler(), context);
-        }
-    }
->>>>>>> 5955029 (feat: Update the ClientTransport interface, introducing ClientCallContext, ClientConfig, and ClientCallInterceptor similar to the Python SDK. Introduce a ClientTransportProvider and update the JSONRPC and gRPC transport implementations. Introduce a new Client and ClientFactory implementations.):client/src/main/java/io/a2a/client/Client.java
 }
