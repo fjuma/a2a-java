@@ -1,4 +1,4 @@
-package io.a2a.client.config;
+package io.a2a.client;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +12,6 @@ public class ClientConfig {
 
     private final Boolean streaming;
     private final Boolean polling;
-    private final List<ClientTransportConfig> clientTransportConfigs;
     private final List<String> supportedTransports;
     private final Boolean useClientPreference;
     private final List<String> acceptedOutputModes;
@@ -20,13 +19,12 @@ public class ClientConfig {
     private final Integer historyLength;
     private final Map<String, Object> metadata;
 
-    public ClientConfig(Boolean streaming, Boolean polling, List<ClientTransportConfig> clientTransportConfigs,
+    public ClientConfig(Boolean streaming, Boolean polling,
                         List<String> supportedTransports, Boolean useClientPreference,
                         List<String> acceptedOutputModes, PushNotificationConfig pushNotificationConfig,
                         Integer historyLength, Map<String, Object> metadata) {
         this.streaming = streaming == null ? true : streaming;
         this.polling = polling == null ? false : polling;
-        this.clientTransportConfigs = clientTransportConfigs;
         this.supportedTransports = supportedTransports;
         this.useClientPreference = useClientPreference == null ? false : useClientPreference;
         this.acceptedOutputModes = acceptedOutputModes;
@@ -41,10 +39,6 @@ public class ClientConfig {
 
     public boolean isPolling() {
         return polling;
-    }
-
-    public List<ClientTransportConfig> getClientTransportConfigs() {
-        return clientTransportConfigs;
     }
 
     public List<String> getSupportedTransports() {
@@ -74,7 +68,6 @@ public class ClientConfig {
     public static class Builder {
         private Boolean streaming;
         private Boolean polling;
-        private List<ClientTransportConfig> clientTransportConfigs;
         private List<String> supportedTransports;
         private Boolean useClientPreference;
         private List<String> acceptedOutputModes;
@@ -89,11 +82,6 @@ public class ClientConfig {
 
         public Builder setPolling(Boolean polling) {
             this.polling = polling;
-            return this;
-        }
-
-        public Builder setClientTransportConfigs(List<ClientTransportConfig> clientTransportConfigs) {
-            this.clientTransportConfigs = clientTransportConfigs;
             return this;
         }
 
@@ -128,7 +116,7 @@ public class ClientConfig {
         }
 
         public ClientConfig build() {
-            return new ClientConfig(streaming, polling, clientTransportConfigs,
+            return new ClientConfig(streaming, polling,
                     supportedTransports, useClientPreference, acceptedOutputModes,
                     pushNotificationConfig, historyLength, metadata);
         }
